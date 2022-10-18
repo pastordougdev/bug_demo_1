@@ -5,10 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'imports.dart';
 
-class Screen2 extends Entity
-    with HasGameRef<BugDemoGame>, FlameBlocListenable<DemoBloc, DemoState> {
-  int _squares = 0;
-  int _circles = 0;
+class Screen2 extends Entity with HasGameRef<BugDemoGame> {
   late final TextPaint textPaint;
 
   final style = const TextStyle(fontSize: 24.0, color: Colors.white70);
@@ -29,6 +26,19 @@ class Screen2 extends Entity
       ..position = Vector2(20, 55);
 
     add(exitButton);
+    add(CircleText()..position = Vector2(20, 200));
+    add(SquareText()..position = Vector2(200, 200));
+  }
+}
+
+class CircleText extends Entity with FlameBlocListenable<DemoBloc, DemoState> {
+  int _count = 0;
+  late final TextPaint textPaint;
+
+  final style = const TextStyle(fontSize: 24.0, color: Colors.white70);
+
+  CircleText() {
+    textPaint = TextPaint(style: style);
   }
 
   @override
@@ -39,33 +49,38 @@ class Screen2 extends Entity
 
   void _getState() async {
     await mounted;
-    final state = bloc.state;
-    _squares = state.squares;
-    _circles = state.circles;
+    _count = bloc.state.circles;
   }
 
   @override
   void render(Canvas canvas) {
-    final cText = 'Circle Count: $_circles';
-    final sText = 'Square Count: $_squares';
-
-    textPaint.render(canvas, cText, Vector2(20, 200));
-    textPaint.render(canvas, sText, Vector2(200, 200));
+    textPaint.render(canvas, 'Circle Count: $_count', Vector2.zero());
   }
 }
 
-class SomeText extends Entity {
-  final String text;
+class SquareText extends Entity with FlameBlocListenable<DemoBloc, DemoState> {
+  int _count = 0;
   late final TextPaint textPaint;
 
   final style = const TextStyle(fontSize: 24.0, color: Colors.white70);
 
-  SomeText(this.text) {
+  SquareText() {
     textPaint = TextPaint(style: style);
   }
 
   @override
+  void onMount() {
+    super.onMount();
+    _getState();
+  }
+
+  void _getState() async {
+    await mounted;
+    _count = bloc.state.squares;
+  }
+
+  @override
   void render(Canvas canvas) {
-    textPaint.render(canvas, text, Vector2.zero());
+    textPaint.render(canvas, 'Square Count: $_count', Vector2.zero());
   }
 }
