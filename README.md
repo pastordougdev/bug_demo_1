@@ -1,9 +1,5 @@
 # bug_demo_1
 
-A new Flutter project.
-
-## Getting Started
-
 A small, simplistic Flutter Flame application to demonstrate possible bug.
 
 ## Situation
